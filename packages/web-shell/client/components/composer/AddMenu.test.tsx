@@ -448,6 +448,16 @@ describe('AddMenu', () => {
     expect(menuItem('composer-add-menu-mcp')).not.toBeNull();
     expect(menuItem('composer-add-menu-skills')).not.toBeNull();
     expect(menuItem('composer-add-menu-empty')).toBeNull();
+
+    for (const testId of [
+      'composer-add-menu-file',
+      'composer-add-menu-reference-file',
+      'composer-add-menu-extensions',
+      'composer-add-menu-mcp',
+      'composer-add-menu-skills',
+    ]) {
+      expect(menuItem(testId)?.firstElementChild?.tagName).toBe('svg');
+    }
   });
 
   it('picks files through the hidden input and reports them', async () => {
@@ -1060,8 +1070,38 @@ describe('mobile AddMenu', () => {
       await openMenu();
       expect(menuItem('composer-add-menu-empty')).toBeNull();
       expect(menuItem('composer-add-menu-reference-file')).not.toBeNull();
+      expect(
+        menuItem('composer-add-menu-reference-file')?.firstElementChild
+          ?.tagName,
+      ).toBe('svg');
     },
   );
+  it('renders leading icons for action items in the mobile drawer', async () => {
+    const props = mobileProps({
+      addFileAvailable: true,
+      getWorkspaceActions: () => ({
+        listDirectory: vi.fn().mockResolvedValue([]),
+        loadExtensionsStatus: vi.fn().mockResolvedValue({ extensions: [] }),
+        loadMcpStatus: vi.fn().mockResolvedValue({ servers: [] }),
+        loadMcpResources: vi.fn().mockResolvedValue({ servers: [] }),
+      }),
+      skills: [{ name: 'review', description: '' }],
+    });
+    renderWith(props);
+    await openMenu();
+    await settle();
+    for (const testId of [
+      'composer-add-menu-file',
+      'composer-add-menu-reference-file',
+      'composer-add-menu-extensions',
+      'composer-add-menu-mcp',
+      'composer-add-menu-skills',
+    ]) {
+      const item = menuItem(testId);
+      expect(item).not.toBeNull();
+      expect(item?.firstElementChild?.tagName).toBe('svg');
+    }
+  });
   it('uses the scoped bottom drawer and supports reference search and back', async () => {
     const props = mobileProps({
       getWorkspaceActions: () => ({

@@ -9,10 +9,15 @@ import {
 import type { ChangeEvent } from 'react';
 import {
   ArrowLeftIcon,
+  BoxIcon,
+  FilePlusIcon,
   GitBranchIcon,
+  Link2Icon,
   MessageCircleQuestionIcon,
   PlusIcon,
+  PuzzleIcon,
   SlashIcon,
+  SparklesIcon,
   XIcon,
 } from 'lucide-react';
 import { useI18n } from '../../i18n';
@@ -647,8 +652,10 @@ export function AddMenu({
                       <Button
                         variant="ghost"
                         className={mobileRowClass}
+                        data-testid="composer-add-menu-file"
                         onClick={() => pickMobileFiles('attach')}
                       >
+                        <FilePlusIcon />
                         {t('composerMobile.files')}
                       </Button>
                     </>
@@ -664,17 +671,18 @@ export function AddMenu({
                   )}
                   {(
                     [
-                      ['files', availability.referenceFile],
-                      ['extensions', availability.extensions],
-                      ['mcp', availability.mcp],
+                      ['files', availability.referenceFile, Link2Icon],
+                      ['extensions', availability.extensions, PuzzleIcon],
+                      ['mcp', availability.mcp, BoxIcon],
                       [
                         'skills',
                         availability.skills && !mobileActions.shellMode,
+                        SparklesIcon,
                       ],
                     ] as const
                   )
                     .filter(([, available]) => !disabled && available)
-                    .map(([id]) => (
+                    .map(([id, , Icon]) => (
                       <Button
                         key={id}
                         data-testid={`composer-add-menu-${id === 'files' ? 'reference-file' : id}`}
@@ -685,6 +693,7 @@ export function AddMenu({
                           if (id === 'skills') onSkillsOpenChange?.(true);
                         }}
                       >
+                        <Icon />
                         {pageLabels[id]}
                       </Button>
                     ))}
@@ -956,7 +965,8 @@ export function AddMenu({
                 {addFileAvailable || uploadAvailable ? (
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger data-testid="composer-add-menu-file">
-                      {t('composerAdd.file.label')}
+                      <FilePlusIcon />
+                      <span>{t('composerAdd.file.label')}</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent
                       collisionPadding={8}
@@ -990,6 +1000,7 @@ export function AddMenu({
                     onPointerMove={() => setReferenceSearchAutoFocus(false)}
                     onClick={() => setReferenceSearchAutoFocus(true)}
                   >
+                    <Link2Icon />
                     <span className="min-w-0 flex-1">
                       {t('composerAdd.referenceFile.label')}
                     </span>
@@ -1020,6 +1031,7 @@ export function AddMenu({
                     disabled={!availability.extensions}
                     data-testid="composer-add-menu-extensions"
                   >
+                    <PuzzleIcon />
                     <span className="min-w-0 flex-1">
                       {t('composerAdd.extensions.label')}
                     </span>
@@ -1046,6 +1058,7 @@ export function AddMenu({
                     disabled={!availability.mcp}
                     data-testid="composer-add-menu-mcp"
                   >
+                    <BoxIcon />
                     <span className="min-w-0 flex-1">
                       {t('composerAdd.mcp.label')}
                     </span>
@@ -1073,6 +1086,7 @@ export function AddMenu({
                     disabled={!availability.skills}
                     data-testid="composer-add-menu-skills"
                   >
+                    <SparklesIcon />
                     <span className="min-w-0 flex-1">
                       {t('composerAdd.skills.label')}
                     </span>
